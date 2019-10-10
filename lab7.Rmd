@@ -1,6 +1,6 @@
 ---
-title: "lab7"
-author: "Eugene Miller"
+title: "Lab 7: Team All Stars"
+author: "Johnny Tamanaha, Emily Archambault, Eugene Miller, Kaiyuan Fan, Jingzhi Zhang"
 date: "10/10/2019"
 output: html_document
 ---
