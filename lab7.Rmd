@@ -5,6 +5,23 @@ date: "10/10/2019"
 output: html_document
 ---
 
+### Dataset Description
+This dataset contains 2075259 measurements gathered in a house located in Sceaux (7km of Paris, France) between December 2006 and November 2010 (47 months). It includes seven different power measurements as well as date and time. We handled missing values by removing them from the dataset, as we could not justify their significance. 
+
+```{r, setup, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(lubridate)
+power_data <- read_delim("household_power_consumption.txt", delim = ";", na = c('', '?'),
+                  col_types = cols(Date = col_date("%d/%m/%Y"),
+                                   Global_active_power = col_double(),
+                                   Global_reactive_power = col_double(),
+                                   Global_intensity = col_double(),
+                                   Sub_metering_1 = col_double(),
+                                   Sub_metering_2 = col_double(),
+                                   Sub_metering_3 = col_double()),
+                                    locale = locale(decimal_mark = ".", grouping_mark = ","))
+```
+
 ## Individual Sections
 
 ## Johnny Tamanaha
@@ -43,3 +60,53 @@ My question is interesting because it shows how the general power usage for the 
 At first I was trying to compare different variables with time between 2006 and 2010. The graphs always looked too cluttered to gain any insight, so I decided to average the variables I chose at each point in time for each year, so that the points would be smoother to look at. After I found the variable that I wanted, I realized that there weren't too many years to plot in the entire data set, so I decided to stick them all on the same plot to show a better time series of the power usage. 
 
 I think that renewable energy companies benefit from my analysis because it shows a slight trend towards less power usage. The exact opposite goes for power companies. 
+
+### Eugene Miller
+
+There are 11 official holidays in France, where this dataset was created. How does energy use vary depending on whether or not it is a holiday? Three holidays are on 8 May, 25 December, 14 July (V-Day, Christmas, and Bastille Day). By comparing these holidays to control days five days prior to the holiday, we can determine whether these holidays constitute abnormal energy usage. 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+data <- power_data %>%
+  separate(Date,into = c("Year", "Month", "Day"), convert = TRUE) %>%
+  separate(Time, into = c("Hour", "Minute", "Second"), convert = TRUE) %>%
+  mutate(Active_energy_consumed = (Global_active_power*1000/60 - Sub_metering_1 - Sub_metering_2 - Sub_metering_3), Datetime = make_datetime(Year, Month, Day, Hour, Minute, Second)) 
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+holidays1 <- data %>%
+  filter(`Day` == 8 & `Month` == 4) 
+holidays2 <- data %>%
+  filter(Day == 25 & Month == 12)
+holidays3 <- data %>%
+  filter(Day == 14 & Month == 7)
+control1 <- data %>%
+  filter(Day == 3 & Month == 4)
+control2 <- data %>%
+  filter(Day == 20 & Month == 12 & !is.na(Active_energy_consumed))
+  
+control3 <- data %>%
+  filter(Day == 9 & Month ==7)
+
+holiday_data <- rbind(holidays1,holidays2,holidays3,control1,control2,control3)
+
+#These charts show both higher and more sustained energy usage during holidays as comared to a normal day.
+ggplot(holiday_data, aes(Hour, Active_energy_consumed)) +
+  geom_col() + 
+  facet_wrap(Month~Day) +
+  labs(x = "Hour of Day", y = "Energy Consumed (Watt Hours)")
+
+hsum1 <- sum(holidays1[14]) / 1000
+csum1 <- sum(control1[14]) / 1000
+hsum2 <- sum(holidays2[14]) / 1000
+csum2 <- sum(control2[14]) / 1000
+hsum3 <- sum(holidays3[14]) / 1000
+csum3 <- sum(control3[14]) / 1000
+
+```
+
+These charts show both higher and more sustained energy usage during holidays as comared to a normal day. We can demonstrate this difference statistically as well. Comparing April 3: `r csum1` kWh to April 8: `r hsum1` kWh, December 20: `r csum2` kWh to December 25: `r hsum2` kWh, and July 9: `r csum3` kWh to July 14: `r hsum3` kWh we see the higher use on holidays. 
+
+This is an interesting question because it shows how factors outside the dataset can affect measurements that we percieve in the dataset. To come to this question, I first plotted energy use over month, split by night and day. Noticing variation over the year, I decided it would be interesting to look at specific holidays and see how their energy use varied compared to normal days.
+
+I think this analysis would be useful to climate change activists who want to show that we are using too much energy, and it would be harmful to power companies who try to downplay their influence in people's lives.
