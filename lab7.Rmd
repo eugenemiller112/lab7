@@ -8,7 +8,7 @@ output: html_document
 ## Individual Sections
 
 ## Johnny Tamanaha
-```{r, warning=FALSE, message=FASLE}
+```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
 data <- read_delim("household_power_consumption.txt", delim=";", na = c("","?"), col_types=cols(Date = col_date("%e/%m/%Y"), Time=col_time("%H:%M:%S"), .default=col_double()), locale=locale(decimal_mark="."))
 ```
