@@ -61,7 +61,7 @@ At first I was trying to compare different variables with time between 2006 and 
 
 I think that renewable energy companies benefit from my analysis because it shows a slight trend towards less power usage. The exact opposite goes for power companies. 
 
-### Eugene Miller
+## Eugene Miller
 
 There are 11 official holidays in France, where this dataset was created. How does energy use vary depending on whether or not it is a holiday? Three holidays are on 8 May, 25 December, 14 July (V-Day, Christmas, and Bastille Day). By comparing these holidays to control days five days prior to the holiday, we can determine whether these holidays constitute abnormal energy usage. 
 
@@ -110,3 +110,25 @@ These charts show both higher and more sustained energy usage during holidays as
 This is an interesting question because it shows how factors outside the dataset can affect measurements that we percieve in the dataset. To come to this question, I first plotted energy use over month, split by night and day. Noticing variation over the year, I decided it would be interesting to look at specific holidays and see how their energy use varied compared to normal days.
 
 I think this analysis would be useful to climate change activists who want to show that we are using too much energy, and it would be harmful to power companies who try to downplay their influence in people's lives.
+
+##Emily Archambault
+
+Question: How does power usage from laundry room devices vary across the months of the year?
+
+``{r, echo = FALSE, message = FALSE, warning = FALSE}
+washmonth <- power_data %>% select(month, Sub_metering_2) %>% group_by(month) %>% 
+summarise(mean.sub2=mean(Sub_metering_2, na.rm=TRUE))
+ggplot(washmonth) + geom_col(aes(month, mean.sub2)) + 
+labs(x = "Month", y = "Sub Metering 2 (Watt-Hours)", title ="Laundry Room Power Usage")
+```
+```{r}
+janmean <- data1 %>% filter(month == 1) %>% select(Sub_metering_2)%>% 
+summarise(mean.jan=mean(Sub_metering_2, na.rm=TRUE))
+augmean <- data1 %>% filter(month == 8) %>% select(Sub_metering_2)%>% 
+summarise(mean.aug=mean(Sub_metering_2, na.rm=TRUE))
+```
+From looking at this graph, it appears that average power use (in watt-hours) for the laundry room is higher during the winter months, and drops lower in the summer. I plotted the mean value for Sub Metering 2 across each month using a column chart. This is supported by calculating the exact value of the mean for different months and comparing. For example, in January it is `r janmean`, and in August it is `r augmean`.
+
+This question is interesting because it shows a pattern in the use of laundry room power, and that it is not simply constant across a year like one might initially think. I came up with this question by looking at the different sub metering categories, and thinking of reasons the power usage for each one might change over time, and then plotting some graphs to see if any of my ideas were correct. 
+
+Laundry detergent and other various laundry product companies could be helped by this analysis because if they see how consumer laundry habits change over the year, they can learn to market more effectively.
