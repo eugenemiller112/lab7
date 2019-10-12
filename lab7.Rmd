@@ -4,3 +4,42 @@ author: "Johnny Tamanaha, Emily Archambault, Eugene Miller, Kaiyuan Fan, Jingzhi
 date: "10/10/2019"
 output: html_document
 ---
+
+## Individual Sections
+
+## Johnny Tamanaha
+```{r, warning=FALSE, message=FASLE}
+library(tidyverse)
+data <- read_delim("household_power_consumption.txt", delim=";", na = c("","?"), col_types=cols(Date = col_date("%e/%m/%Y"), Time=col_time("%H:%M:%S"), .default=col_double()), locale=locale(decimal_mark="."))
+```
+```{r}
+data_year <- data %>%
+  separate(Date, into=c("year", "month", "day"), "-")
+avg_global_intensity <- data_year %>%
+  group_by(year, Time) %>%
+  summarize(avg = mean(Global_intensity, na.rm=TRUE)) %>%
+  filter(!is.na(year))
+ggplot(avg_global_intensity) +
+  geom_point(mapping=aes(x=Time, y=avg, color=year)) +
+  labs(title="Average Household Active Power Split by Year") +
+  ylab("Active Power (amp)") +
+  xlab("Time (Hour:Minutes:Seconds)") +
+  scale_color_discrete(name=("Year"))
+```
+```{r}
+avg_global_intensity_stat <- data_year %>%
+  group_by(year) %>%
+  summarize(avg = mean(Global_intensity, na.rm=TRUE)) %>%
+  filter(!is.na(year))
+avg_global_intensity_stat
+```
+
+Question: How has daily power usage changed from 2006 to 2010?
+
+I first separated the date variable into year, month and day. Then, I grouped the data by year and time and summarized to find the average power usage at each time of each year. Finally, I plotted the time vs the average power and split it by year. To find a summary statistic, I grouped by year and took the average power usage over each year.
+
+My question is interesting because it shows how the general power usage for the people of France changes over time. 
+
+At first I was trying to compare different variables with time between 2006 and 2010. The graphs always looked too cluttered to gain any insight, so I decided to average the variables I chose at each point in time for each year, so that the points would be smoother to look at. After I found the variable that I wanted, I realized that there weren't too many years to plot in the entire data set, so I decided to stick them all on the same plot to show a better time series of the power usage. 
+
+I think that renewable energy companies benefit from my analysis because it shows a slight trend towards less power usage. The exact opposite goes for power companies. 
