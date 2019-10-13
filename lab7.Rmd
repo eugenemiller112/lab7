@@ -132,3 +132,55 @@ From looking at this graph, it appears that average power use (in watt-hours) fo
 This question is interesting because it shows a pattern in the use of laundry room power, and that it is not simply constant across a year like one might initially think. I came up with this question by looking at the different sub metering categories, and thinking of reasons the power usage for each one might change over time, and then plotting some graphs to see if any of my ideas were correct. 
 
 Laundry detergent and other various laundry product companies could be helped by this analysis because if they see how consumer laundry habits change over the year, they can learn to market more effectively.
+
+##Kaiyuan Fan
+
+Question: How does weather influence the usage of household in Paris from 2006 to 2010?
+For convenient, I will choose two representative date to compare, which is November 1th for winter and June 1th for summer.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+power <- power_data %>%
+  separate(Date,into = c("Year", "Month", "Day"), convert = TRUE) %>%
+  separate(Time, into = c("Hour", "Minute", "Second"), convert = TRUE) %>%
+  mutate(Active_energy_consumed = (Global_active_power*1000/60 - Sub_metering_1 - Sub_metering_2 - Sub_metering_3))
+
+summer1 <- power %>%
+  filter(`Day` == 1 & `Month` == 6 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+winter1 <- power %>%
+  filter(`Day` == 1 & `Month` == 11 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+summer2 <- power %>%
+  filter(`Day` == 26 & `Month` == 6 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+winter2 <- power %>%
+  filter(`Day` == 26 & `Month` == 11 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+summer3 <- power %>%
+  filter(`Day` == 26 & `Month` == 6 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+winter3 <- power %>%
+  filter(`Day` == 26 & `Month` == 11 & !is.na(Active_energy_consumed)) %>%
+  summarize(mean(Active_energy_consumed))
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+June1 <- power %>%
+  filter(`Month` == 6 | `Month` == 11 & !is.na(Active_energy_consumed))
+
+ggplot(June1, aes(Year, Active_energy_consumed)) +
+  geom_point() + 
+  facet_wrap(~Month) +
+  labs(title = "Comparing Active_energy_consumed in November and June for Different Year")
+```
+
+Findings:
+Firstly, I compare 3 groups of 2 days. Then I find that for every group, average active energy consumed of a winter day is higher than average active energy consumed of a summer day. 
+
+Then, I make a plot that compare the usage in June and November for different years. I find for every year, November's usage is higher than the June's.
+We know paris is cold in winter and warm in summer. In conclusion, weather does influence the usage of household in paris. 
+
+This is an interesting question because it shows how factors outside the dataset can affect measurements that is already in dataset. I use the different month to represent the winter and summer, which is controling the weather. 
+
+I think this analysis would be useful to people who worked in power station.
+
