@@ -115,7 +115,7 @@ I think this analysis would be useful to climate change activists who want to sh
 
 Question: How does power usage from laundry room devices vary across the months of the year?
 
-``{r, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 washmonth <- power_data %>% select(month, Sub_metering_2) %>% group_by(month) %>% 
 summarise(mean.sub2=mean(Sub_metering_2, na.rm=TRUE))
 ggplot(washmonth) + geom_col(aes(month, mean.sub2)) + 
