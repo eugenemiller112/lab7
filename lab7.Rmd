@@ -181,6 +181,6 @@ Then, I make a plot that compare the usage in June and November for different ye
 We know paris is cold in winter and warm in summer. In conclusion, weather does influence the usage of household in paris. 
 
 This is an interesting question because it shows how factors outside the dataset can affect measurements that is already in dataset. I use the different month to represent the winter and summer, which is controling the weather. 
-
+Benefit:
 I think this analysis would be useful to people who worked in power station.
 
